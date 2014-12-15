@@ -1,0 +1,16 @@
+{
+  "name": "dynamodbstream_to_norikra",
+  "version": "0.0.0",
+  "description": "This is AWS Lambda function to route DynamoDB Stream records to Norikra.",
+  "main": "DynamoDBStream-to-Norikra.js",
+  "dependencies": {
+    "async": "~0.9.0",
+    "request": "~2.51.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shinsuke Yokota",
+  "license": "BSD"
+}
