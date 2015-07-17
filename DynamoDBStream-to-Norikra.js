@@ -21,7 +21,7 @@ var formatRecord = function (record, callback) {
 
   var formattedRecord = {};
   for (var i in record) {
-    if (i == 'Dynamodb') {
+    if (i == 'dynamodb') {
       formattedRecord[i] = {};
       for (var j in record[i]) {
         if (j == 'Keys' || j == 'NewImage' || j == 'OldImage') {
@@ -50,7 +50,8 @@ exports.handler = function(event, context) {
   console.log("Event: %j", event);
 
   var formatedRecords = event.Records.map(formatRecord);
-  var targets = formatedRecords.map(function (record) {return record.table;});
+  var targets = formatedRecords.map(function (record) { return record.table; }).
+                  filter(function (x, i, self) { return self.indexOf(x) === i; });
   async.series(
     [
       // create Norikra target
@@ -64,6 +65,7 @@ exports.handler = function(event, context) {
             };
             request(options, function (err, res, body) {
               if (!err && res.statusCode == 200) {
+                console.log('create target:' + target);
                 cb();
               }
               else {
@@ -73,7 +75,7 @@ exports.handler = function(event, context) {
           },
           function (err) {
             if (err) {callback(err);}
-            else {callback(null, 'create target ' + targets);}
+            else {callback(null, 'created targets');}
           }
         )
       },
@@ -89,6 +91,7 @@ exports.handler = function(event, context) {
             };
             request(options, function (err, res, body) {
               if (!err && res.statusCode == 200) {
+                console.log('sends ' + events.length + ' events to ' + target);
                 cb();
               }
               else {
@@ -98,7 +101,7 @@ exports.handler = function(event, context) {
           },
           function (err) {
             if (err) {callback(err);}
-            else {callback(null, 'send events');}
+            else {callback(null, 'sent events');}
           }
         )
       }
@@ -109,3 +112,5 @@ exports.handler = function(event, context) {
     }
   );
 }
+
+// exports.handler(event, {done: function(){process.exit();}});
